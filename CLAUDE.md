@@ -85,7 +85,8 @@
 - Frontend: React 18 + Vite, чистый JavaScript (без TypeScript)
 - Маршрутизация: React Router
 - Стили: Tailwind CSS v4 через плагин Vite
-- Графики: Chart.js через react-chartjs-2
+- Графики: свои компоненты на SVG в JSX (гистограмма, калибровочная кривая), без библиотек
+- Иконки: lucide-react
 - ML: scikit-learn, pandas, joblib
 - Сервер: VPS Ubuntu, nginx + gunicorn + systemd, HTTPS через Let's Encrypt
 

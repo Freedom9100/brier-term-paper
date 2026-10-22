@@ -36,7 +36,8 @@
 | База данных | PostgreSQL 16 |
 | Frontend | React 18 + Vite, JavaScript |
 | Стили | Tailwind CSS v4 |
-| Графики | Chart.js через react-chartjs-2 |
+| Графики | свои компоненты на SVG |
+| Иконки | lucide-react |
 | Машинное обучение | scikit-learn, pandas, joblib |
 | Сервер | VPS Ubuntu, nginx + gunicorn + systemd, HTTPS |
 
