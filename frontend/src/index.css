@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* Шрифт Onest лежит в проекте, а не грузится с чужого сайта.
+   Три файла — три набора букв: кириллица, расширенная латиница, латиница.
+   Браузер скачивает только тот файл, буквы из которого есть на странице. */
+@font-face {
+  font-family: "Onest";
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/onest-cyrillic-wght-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Onest";
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/onest-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Onest";
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/onest-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Токены дизайна. Каждая строка превращается в классы Tailwind:
+   --color-ink даёт text-ink, bg-ink, border-ink и так далее. */
+@theme {
+  --font-sans: "Onest", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #0B0B0C;          /* основной текст и чёрные кнопки */
+  --color-ink-hover: #2A2A2E;
+  --color-ink-2: #5E5E66;        /* второстепенный текст */
+  --color-ink-3: #8E8E96;
+  --color-line: #E6E6EA;         /* разделители */
+  --color-line-2: #D4D4DA;       /* рамки кнопок и чипов */
+  --color-paper: #FFFFFF;
+  --color-paper-2: #F3F3F5;      /* фон полей и плашек */
+  --color-canvas: #FAFAFA;       /* фон страницы на десктопе */
+  --color-accent: #2F45FF;       /* мнение группы */
+  --color-accent-soft: #EEF0FF;
+  --color-pos: #0A7443;          /* очки выше 50 */
+  --color-pos-soft: #E6F4EC;
+  --color-neg: #C22B27;          /* очки ниже 50 и ошибки */
+  --color-neg-soft: #FCEBEA;
+
+  /* Шесть оттенков серого для кружков с инициалами. */
+  --color-tone-1: #EFEFF2;
+  --color-tone-2: #E2E2E7;
+  --color-tone-3: #CFCFD6;
+  --color-tone-4: #6E6E78;
+  --color-tone-5: #4A4A52;
+  --color-tone-6: #18181B;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-paper);
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  button {
+    cursor: pointer;
+  }
+}
