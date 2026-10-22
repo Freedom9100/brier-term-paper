@@ -39,13 +39,14 @@ function AskButton() {
   );
 }
 
-export function AppNav({ role }) {
+// hideOnPhone — не показывать нижнюю панель на телефоне (колонка планшета остаётся).
+export function AppNav({ role, hideOnPhone = false }) {
   return (
     <nav
       aria-label="Основная навигация"
-      className="fixed inset-x-0 bottom-0 z-10 h-[76px] pb-4 flex border-t border-line bg-paper/95 backdrop-blur
+      className={`${hideOnPhone ? 'hidden md:flex' : 'flex'} fixed inset-x-0 bottom-0 z-10 h-[76px] pb-4 border-t border-line bg-paper/95 backdrop-blur
         md:sticky md:top-0 md:h-screen md:w-[84px] md:shrink-0 md:flex-col md:items-center md:pt-5 md:pb-0 md:border-t-0 md:border-r md:bg-paper
-        lg:hidden"
+        lg:hidden`}
     >
       <Link to="/" className="hidden md:block" aria-label="На главную">
         <Logo markClass="size-[34px]" showWord={false} />

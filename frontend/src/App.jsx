@@ -7,6 +7,7 @@ import { QuestionPage } from './pages/QuestionPage';
 import { RatingPage } from './pages/RatingPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { CabinetPage } from './pages/CabinetPage';
+import { CreateQuestionPage } from './pages/CreateQuestionPage';
 
 // Роль пользователя: 'guest' — гость, 'user' — участник, 'admin' — администратор.
 // Пока входа нет, роль меняется здесь руками, чтобы показать разные варианты страниц.
@@ -40,9 +41,9 @@ export default function App() {
           <Route path="*" element={<PagePlaceholder title="Страница не найдена" />} />
         </Route>
 
-        {/* Создание вопроса: на телефоне и планшете без навигации, чтобы ничто не отвлекало. */}
-        <Route element={<MainLayout role={role} hideNav />}>
-          <Route path="/questions/new" element={<PagePlaceholder title="Новый вопрос" />} />
+        {/* Создание вопроса: на телефоне без нижней панели, чтобы ничто не отвлекало от формы. */}
+        <Route element={<MainLayout role={role} hidePhoneNav />}>
+          <Route path="/questions/new" element={<CreateQuestionPage role={role} />} />
         </Route>
 
         {/* У входа и регистрации на десктопе разная левая половина, поэтому два лейаута. */}
