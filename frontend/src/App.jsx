@@ -4,6 +4,7 @@ import { AuthLayout } from './layouts/AuthLayout';
 import { MobileHeader } from './components/MobileHeader';
 import { FeedPage } from './pages/FeedPage';
 import { QuestionPage } from './pages/QuestionPage';
+import { RatingPage } from './pages/RatingPage';
 
 // Роль пользователя: 'guest' — гость, 'user' — участник, 'admin' — администратор.
 // Пока входа нет, роль меняется здесь руками, чтобы показать разные варианты страниц.
@@ -29,7 +30,7 @@ export default function App() {
         <Route element={<MainLayout role={role} />}>
           <Route path="/" element={<FeedPage role={role} />} />
           <Route path="/questions/:id" element={<QuestionPage role={role} />} />
-          <Route path="/rating" element={<PagePlaceholder title="Рейтинг" />} />
+          <Route path="/rating" element={<RatingPage role={role} />} />
           <Route path="/users/:username" element={<PagePlaceholder title="Профиль участника" />} />
           <Route path="/me" element={<PagePlaceholder title="Личный кабинет" />} />
           <Route path="/me/resolved" element={<PagePlaceholder title="Кабинет — разрешённые" />} />
