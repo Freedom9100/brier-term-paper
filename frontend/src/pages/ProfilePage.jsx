@@ -8,6 +8,7 @@ import { CalibrationChart } from '../components/CalibrationChart';
 import { CalibrationTable } from '../components/CalibrationTable';
 import { ForecastRow, HiddenForecastsNote } from '../components/ForecastRow';
 import { Panel, TopForecastersPanel } from '../components/SidePanels';
+import { NotFoundPage } from './NotFoundPage';
 import { calibration, leaderboard, myRow, people, resolvedForecasts } from '../data/mock';
 
 // Белая панель на десктопе; на телефоне и планшете — без рамки.
@@ -15,7 +16,7 @@ const DESKTOP_PANEL = 'lg:bg-paper lg:rounded-[24px] lg:border lg:border-line';
 
 // Профиль участника: имя, место, три числа, калибровка, разрешённые прогнозы.
 // Открыт всем, в том числе гостю. Прогнозы по открытым вопросам не показываются.
-export function ProfilePage() {
+export function ProfilePage({ role }) {
   // useParams достаёт имя пользователя из адреса /users/alina.s.
   const { username } = useParams();
   const person = people[username];
@@ -24,7 +25,7 @@ export function ProfilePage() {
   const row = allRows.find((leader) => leader.username === username);
 
   if (!person || !row) {
-    return <p className="p-6 text-[17px]">Участник не найден.</p>;
+    return <NotFoundPage role={role} />;
   }
 
   const forecasts = resolvedForecasts[username] ?? [];

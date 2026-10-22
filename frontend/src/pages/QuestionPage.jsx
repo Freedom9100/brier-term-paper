@@ -10,6 +10,7 @@ import { ForecastBlock, GuestPrompt, ClosedNote, ModelLockedNote } from '../comp
 import { ScoreFormula } from '../components/Comparison';
 import { CommentsSection } from '../components/Comments';
 import { QuestionAside } from '../components/QuestionAside';
+import { NotFoundPage } from './NotFoundPage';
 import { comments, questions } from '../data/mock';
 
 // Отступы раздела: телефон 16 px, планшет 24 px, десктоп 32 px; линия снизу.
@@ -23,7 +24,7 @@ export function QuestionPage({ role }) {
   const question = questions[id];
 
   if (!question) {
-    return <p className="p-6 text-[17px]">Вопрос не найден.</p>;
+    return <NotFoundPage role={role} />;
   }
 
   const shareButton = <IconButton icon={Share} label="Поделиться" />;
