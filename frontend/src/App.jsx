@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import { MainLayout } from './layouts/MainLayout';
 import { AuthLayout } from './layouts/AuthLayout';
 import { MobileHeader } from './components/MobileHeader';
+import { FeedPage } from './pages/FeedPage';
 
 // Роль пользователя: 'guest' — гость, 'user' — участник, 'admin' — администратор.
 // Пока входа нет, роль меняется здесь руками, чтобы показать разные варианты страниц.
@@ -25,7 +26,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout role={role} />}>
-          <Route path="/" element={<PagePlaceholder title="Лента вопросов" />} />
+          <Route path="/" element={<FeedPage role={role} />} />
           <Route path="/questions/:id" element={<PagePlaceholder title="Вопрос" />} />
           <Route path="/rating" element={<PagePlaceholder title="Рейтинг" />} />
           <Route path="/users/:username" element={<PagePlaceholder title="Профиль участника" />} />
