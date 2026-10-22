@@ -8,7 +8,8 @@ import { Logo } from '../components/Logo';
 export function AuthLayout({ promo }) {
   return (
     <div className="min-h-screen bg-paper md:bg-canvas lg:bg-paper lg:flex">
-      <aside className="hidden lg:flex lg:flex-col w-[720px] shrink-0 bg-canvas border-r border-line px-16 pt-12 pb-16">
+      {/* Половина экрана, но не шире 720 px: на 1440 это ровно 720, как в макете. */}
+      <aside className="hidden lg:flex lg:flex-col w-1/2 max-w-[720px] shrink-0 bg-canvas border-r border-line px-16 pt-12 pb-16">
         <Link to="/" className="self-start">
           <Logo markClass="size-[34px]" wordClass="text-[23px]" />
         </Link>

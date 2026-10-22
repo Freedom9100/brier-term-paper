@@ -8,6 +8,8 @@ import { RatingPage } from './pages/RatingPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { CabinetPage } from './pages/CabinetPage';
 import { CreateQuestionPage } from './pages/CreateQuestionPage';
+import { LoginPage, LoginPromo } from './pages/LoginPage';
+import { RegisterPage, RegisterPromo } from './pages/RegisterPage';
 
 // Роль пользователя: 'guest' — гость, 'user' — участник, 'admin' — администратор.
 // Пока входа нет, роль меняется здесь руками, чтобы показать разные варианты страниц.
@@ -47,11 +49,11 @@ export default function App() {
         </Route>
 
         {/* У входа и регистрации на десктопе разная левая половина, поэтому два лейаута. */}
-        <Route element={<AuthLayout promo={<PagePlaceholder title="Промо входа" />} />}>
-          <Route path="/login" element={<PagePlaceholder title="Вход" />} />
+        <Route element={<AuthLayout promo={<LoginPromo />} />}>
+          <Route path="/login" element={<LoginPage />} />
         </Route>
-        <Route element={<AuthLayout promo={<PagePlaceholder title="Промо регистрации" />} />}>
-          <Route path="/register" element={<PagePlaceholder title="Регистрация" />} />
+        <Route element={<AuthLayout promo={<RegisterPromo />} />}>
+          <Route path="/register" element={<RegisterPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
