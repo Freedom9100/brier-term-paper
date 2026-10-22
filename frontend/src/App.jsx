@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { MainLayout } from './layouts/MainLayout';
 import { AuthLayout } from './layouts/AuthLayout';
+import { MobileHeader } from './components/MobileHeader';
 
 // Роль пользователя: 'guest' — гость, 'user' — участник, 'admin' — администратор.
 // Пока входа нет, роль меняется здесь руками, чтобы показать разные варианты страниц.
@@ -9,7 +10,12 @@ const role = 'user';
 
 // Временная заглушка: показывает название страницы, пока сама страница не свёрстана.
 function PagePlaceholder({ title }) {
-  return <h1 className="p-6 text-[30px] font-semibold tracking-[-0.035em]">{title}</h1>;
+  return (
+    <>
+      <MobileHeader role={role} />
+      <h1 className="p-6 text-[30px] font-semibold tracking-[-0.035em]">{title}</h1>
+    </>
+  );
 }
 
 // Все адреса приложения. Страницы внутри <Route element={<MainLayout />}>
