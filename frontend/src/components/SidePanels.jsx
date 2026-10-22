@@ -1,10 +1,12 @@
 import { Link } from 'react-router';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Plus } from 'lucide-react';
 import { SectionTitle } from './SectionTitle';
 import { CalibrationChart } from './CalibrationChart';
 import { Avatar } from './Avatar';
+import { Status } from './Status';
+import { Button } from './Button';
 import { calibration, categories, currentUser, leaderboard } from '../data/mock';
-import { formatNumber } from '../utils/score';
+import { formatNumber, formatParticipants } from '../utils/score';
 
 // Белые панели боковой колонки десктопа. На телефоне и планшете их нет:
 // колонку прячет сама страница классом hidden lg:flex.
@@ -94,5 +96,46 @@ export function MiniLeaderRow({ row, highlighted = false }) {
       </span>
       <span className="text-[17px] font-semibold tracking-[-0.02em] tabular-nums">{formatNumber(row.avg)}</span>
     </Link>
+  );
+}
+
+// Кабинет: место в рейтинге — соседи сверху и своя строка.
+export function MyPlaceNearbyPanel({ myRow }) {
+  return (
+    <Panel className="px-5 pt-5 pb-3 overflow-hidden">
+      <SectionTitle title="Место в рейтинге" right={<ArrowLink to="/rating">Весь рейтинг</ArrowLink>} />
+      <div className="mt-2">
+        {leaderboard.slice(8).map((row) => (
+          <MiniLeaderRow key={row.username} row={row} />
+        ))}
+        <div className="py-2 text-[13px] text-ink-2 tabular-nums border-b border-line">
+          {leaderboard.length + 1}–{myRow.place - 1} · ещё {formatParticipants(myRow.place - leaderboard.length - 1)}
+        </div>
+        <MiniLeaderRow row={myRow} highlighted />
+      </div>
+    </Panel>
+  );
+}
+
+// Кабинет, вкладка «Мои вопросы»: что происходит с вопросом после отправки.
+export function ModerationPanel() {
+  const steps = [
+    { kind: 'moderation', text: 'Администратор проверяет формулировку, источник исхода и срок закрытия.' },
+    { kind: 'published', text: 'Вопрос появляется в ленте, и группа ставит прогнозы.' },
+    { kind: 'rejected', text: 'Причина видна здесь же. Отклонённый вопрос не редактируется — создайте новый с её учётом.' },
+  ];
+  return (
+    <Panel className="p-5">
+      <SectionTitle title="Как проходит модерация" />
+      <div className="mt-1">
+        {steps.map((step) => (
+          <div key={step.kind} className="py-3.5 border-b border-line last:border-b-0">
+            <Status kind={step.kind} />
+            <p className="mt-2 text-[14px] leading-5 text-ink-2 text-pretty">{step.text}</p>
+          </div>
+        ))}
+      </div>
+      <Button to="/questions/new" icon={Plus} full className="mt-3">Задать новый вопрос</Button>
+    </Panel>
   );
 }
