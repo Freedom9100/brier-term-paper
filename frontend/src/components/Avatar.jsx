@@ -25,10 +25,11 @@ function getInitials(name) {
   return words.map((word) => word[0]).slice(0, 2).join('');
 }
 
-export function Avatar({ person, size = 36 }) {
+// className — дополнительные классы, например другой размер на планшете: 'md:size-[84px]'.
+export function Avatar({ person, size = 36, className = '' }) {
   return (
     <span
-      className={`${SIZE_CLASSES[size]} ${TONE_CLASSES[person.tone]} inline-flex items-center justify-center rounded-full font-semibold shrink-0 tracking-[-0.02em]`}
+      className={`${SIZE_CLASSES[size]} ${TONE_CLASSES[person.tone]} ${className} inline-flex items-center justify-center rounded-full font-semibold shrink-0 tracking-[-0.02em]`}
     >
       {getInitials(person.name)}
     </span>
