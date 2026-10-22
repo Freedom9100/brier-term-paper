@@ -34,7 +34,7 @@ export function Comparison({ question, role }) {
             <div className="flex-1 min-w-0">
               <div className="text-[15px] font-semibold flex items-center gap-2">
                 {row.who}
-                {row.points === bestPoints && <span className="h-5 px-1.5 rounded-md bg-pos-soft text-pos text-[11px] font-semibold inline-flex items-center">ближе всех</span>}
+                {row.points === bestPoints && <span className="h-5 px-1.5 rounded-md bg-pos-soft text-pos text-[11px] font-semibold inline-flex items-center whitespace-nowrap">ближе всех</span>}
               </div>
               {row.note && <div className="text-[12px] text-ink-2">{row.note}</div>}
             </div>
