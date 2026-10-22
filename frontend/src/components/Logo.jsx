@@ -1,9 +1,11 @@
 // Логотип: тёмный квадрат с диагональю и синей точкой — знак калибровки.
-// size — размер знака в пикселях, showWord — показывать ли слово «брайер» рядом.
-export function Logo({ size = 28, showWord = true, wordClass = 'text-[20px]' }) {
+// Размеры задаются классами Tailwind, поэтому могут меняться по ширине экрана:
+// markClass — размер знака (например, 'size-7 md:size-9'), wordClass — размер слова.
+// showWord — показывать ли слово «брайер» рядом со знаком.
+export function Logo({ markClass = 'size-7', wordClass = 'text-[20px]', showWord = true }) {
   return (
     <span className="inline-flex items-center gap-2">
-      <svg width={size} height={size} viewBox="0 0 28 28" aria-hidden="true" className="shrink-0">
+      <svg viewBox="0 0 28 28" aria-hidden="true" className={`${markClass} shrink-0`}>
         <rect width="28" height="28" rx="8" className="fill-ink" />
         <path d="M7 21 21 7" stroke="white" strokeWidth="2.4" strokeLinecap="round" />
         <circle cx="18.6" cy="14.6" r="3.1" strokeWidth="1.4" className="fill-accent stroke-ink" />
