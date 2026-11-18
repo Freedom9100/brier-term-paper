@@ -16,7 +16,7 @@ const SIZE_CLASSES = {
 };
 
 // icon: Icon — переименование пропа: компонент иконки в JSX пишется с большой буквы.
-export function Button({ children, to, variant = 'primary', size = 'md', icon: Icon, full = false, className = '' }) {
+export function Button({ children, to, variant = 'primary', size = 'md', icon: Icon, full = false, className = '', type = 'button', disabled = false, onClick }) {
   const classes = `${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${full ? 'w-full' : ''} inline-flex items-center justify-center rounded-full font-semibold whitespace-nowrap ${className}`;
   const iconClass = size === 'sm' ? 'size-4' : 'size-[18px]';
   const content = (
@@ -29,7 +29,7 @@ export function Button({ children, to, variant = 'primary', size = 'md', icon: I
   if (to) {
     return <Link to={to} className={classes}>{content}</Link>;
   }
-  return <button type="button" className={classes}>{content}</button>;
+  return <button type={type} disabled={disabled} onClick={onClick} className={`${classes} disabled:cursor-not-allowed disabled:opacity-60`}>{content}</button>;
 }
 
 const ICON_BUTTON_VARIANTS = {
@@ -40,7 +40,7 @@ const ICON_BUTTON_VARIANTS = {
 
 // label обязателен: на кнопке нет текста, и программа чтения с экрана прочтёт label.
 // to — переход внутри приложения, href — обычная ссылка (например, на админку Django).
-export function IconButton({ icon: Icon, label, to, href, size = 40, variant = 'ghost' }) {
+export function IconButton({ icon: Icon, label, to, href, size = 40, variant = 'ghost', onClick, disabled = false }) {
   const sizeClass = size === 36 ? 'size-9' : 'size-10';
   const classes = `${sizeClass} ${ICON_BUTTON_VARIANTS[variant]} inline-flex items-center justify-center rounded-full text-ink shrink-0`;
   const icon = <Icon className="size-[22px]" strokeWidth={1.75} aria-hidden="true" />;
@@ -51,5 +51,5 @@ export function IconButton({ icon: Icon, label, to, href, size = 40, variant = '
   if (href) {
     return <a href={href} className={classes} aria-label={label}>{icon}</a>;
   }
-  return <button type="button" className={classes} aria-label={label}>{icon}</button>;
+  return <button type="button" onClick={onClick} disabled={disabled} className={`${classes} disabled:cursor-not-allowed disabled:opacity-60`} aria-label={label}>{icon}</button>;
 }

@@ -3,13 +3,14 @@ import { Histogram } from './Histogram';
 import { Legend } from './Ruler';
 import { Points, Percent } from './Points';
 import { Comparison } from './Comparison';
-import { calculatePoints } from '../utils/score';
+import { calculatePoints, formatParticipants } from '../utils/score';
 
 // Числа и графики страницы вопроса.
 
 // Пока исход неизвестен: мнение группы крупно, число участников, гистограмма.
 export function CrowdBlock({ question, role }) {
   const showYou = role !== 'guest' && question.you != null;
+  const [count, participantLabel] = formatParticipants(question.participants).split(' ');
   return (
     <>
       <div className="flex items-end justify-between">
@@ -20,12 +21,12 @@ export function CrowdBlock({ question, role }) {
           </div>
         </div>
         <div className="text-right pb-1">
-          <div className="text-[32px] leading-none font-semibold tracking-[-0.03em] tabular-nums">{question.participants}</div>
-          <div className="mt-1 text-[13px] text-ink-2">участников</div>
+          <div className="text-[32px] leading-none font-semibold tracking-[-0.03em] tabular-nums">{count}</div>
+          <div className="mt-1 text-[13px] text-ink-2">{participantLabel}</div>
         </div>
       </div>
       <div className="mt-5">
-        <Histogram bins={question.hist} you={showYou ? question.you : null} mean={question.crowd} />
+        <Histogram bins={question.histogram} you={showYou ? question.you : null} mean={question.crowd} />
       </div>
       <div className="mt-3">
         <Legend showYou={showYou} />
@@ -67,7 +68,7 @@ export function DistributionBlock({ question, role }) {
     <>
       <SectionTitle title="Как распределились прогнозы" right={<span className="text-[13px] text-ink-2 tabular-nums whitespace-nowrap">среднее {question.crowd} %</span>} />
       <div className="mt-4">
-        <Histogram bins={question.hist} you={showYou ? question.you : null} mean={question.crowd} />
+        <Histogram bins={question.histogram} you={showYou ? question.you : null} mean={question.crowd} />
       </div>
       <div className="mt-3">
         <Legend showYou={showYou} />

@@ -25,19 +25,19 @@ export function ForecastRow({ forecast }) {
         </div>
       </div>
       <div className="text-right pt-0.5">
-        <Points value={calculatePoints(forecast.p, forecast.outcome)} className="text-[20px] leading-6" />
+        <Points value={forecast.points ?? calculatePoints(forecast.p, forecast.outcome)} className="text-[20px] leading-6" />
         <div className="text-[11px] text-ink-2">очков</div>
       </div>
     </div>
   );
 }
 
-// Почему в профиле нет открытых прогнозов: их можно было бы списать.
+// В публичном профиле показываются прогнозы с известным исходом.
 export function HiddenForecastsNote({ className = 'rounded-xl bg-paper-2 px-3.5 py-2.5' }) {
   return (
     <div className={`${className} flex items-center gap-2 text-[13px] leading-[18px] text-ink-2`}>
       <EyeOff className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
-      Прогнозы по открытым вопросам скрыты, пока идёт приём.
+      В профиле видны прогнозы по вопросам с известным исходом.
     </div>
   );
 }

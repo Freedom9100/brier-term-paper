@@ -29,7 +29,7 @@ function getInitials(name) {
 export function Avatar({ person, size = 36, className = '' }) {
   return (
     <span
-      className={`${SIZE_CLASSES[size]} ${TONE_CLASSES[person.tone]} ${className} inline-flex items-center justify-center rounded-full font-semibold shrink-0 tracking-[-0.02em]`}
+      className={`${SIZE_CLASSES[size]} ${TONE_CLASSES[person.tone ?? 6]} ${className} inline-flex items-center justify-center rounded-full font-semibold shrink-0 tracking-[-0.02em]`}
     >
       {getInitials(person.name)}
     </span>

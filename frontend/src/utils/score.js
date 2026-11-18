@@ -4,8 +4,8 @@
 // Очки за прогноз по правилу Брайера, от −100 до +100.
 // p — прогноз в процентах (1–99), outcome — исход: 1 — «Да», 0 — «Нет».
 export function calculatePoints(p, outcome) {
-  const error = p / 100 - outcome;
-  return Math.round(100 * (1 - 2 * error * error));
+  const percentError = p - 100 * outcome;
+  return Math.round(10000 - 2 * percentError ** 2) / 100;
 }
 
 // «1 участник», «2 участника», «5 участников» — окончание зависит от числа.

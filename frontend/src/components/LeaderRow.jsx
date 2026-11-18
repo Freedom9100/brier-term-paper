@@ -21,7 +21,7 @@ export function LeaderHead() {
 // isMe — строка текущего пользователя: серый фон и приписка «· вы».
 export function LeaderRow({ row, isMe = false }) {
   return (
-    <Link to={`/users/${row.username}`} className={`${ROW} py-3 ${isMe ? 'bg-paper-2' : 'border-b border-line hover:bg-canvas'}`}>
+    <Link to={`/users/${encodeURIComponent(row.username)}`} className={`${ROW} py-3 ${isMe ? 'bg-paper-2' : 'border-b border-line hover:bg-canvas'}`}>
       <span className={`w-7 text-[15px] font-semibold tabular-nums ${row.place <= 3 ? 'text-ink' : 'text-ink-2'}`}>{row.place}</span>
       <Avatar person={row} size={40} />
       <div className="flex-1 min-w-0">
@@ -30,11 +30,11 @@ export function LeaderRow({ row, isMe = false }) {
           {isMe && <span className="font-normal text-ink-2"> · вы</span>}
         </div>
         <div className="md:hidden text-[13px] text-ink-2 tabular-nums">Брайер {formatNumber(row.brier, 3)} · {row.count} прогнозов</div>
-        <div className="hidden md:block text-[13px] text-ink-2">@{row.username}</div>
+        <div className="hidden md:block text-[13px] text-ink-2 truncate">@{row.username}</div>
       </div>
       <span className="hidden md:block w-24 text-right text-[15px] tabular-nums">{formatNumber(row.brier, 3)}</span>
       <span className="hidden md:block w-24 text-right text-[15px] text-ink-2 tabular-nums">{row.count}</span>
-      <span className="md:w-28 text-right text-[24px] leading-none font-semibold tracking-[-0.03em] tabular-nums">{formatNumber(row.avg)}</span>
+      <span className="md:w-28 text-right text-[24px] leading-none font-semibold tracking-[-0.03em] tabular-nums">{formatNumber(row.avg, 2)}</span>
     </Link>
   );
 }

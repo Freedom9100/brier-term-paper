@@ -1,0 +1,6 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools-items %}
+  {% if resolve_url %}<li><a href="{{ resolve_url }}">Указать исход</a></li>{% endif %}
+  {{ block.super }}
+{% endblock %}

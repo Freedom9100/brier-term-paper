@@ -15,13 +15,13 @@ function NavItem({ to, icon: Icon, end = false, children }) {
       to={to}
       end={end}
       className={({ isActive }) =>
-        `flex-1 flex flex-col items-center gap-1 pt-2 md:flex-none md:w-[68px] md:py-2 ${isActive ? 'text-ink' : 'text-ink-2'}`
+        `flex-1 flex flex-col items-center justify-center md:gap-1 md:flex-none md:w-[68px] md:py-2 ${isActive ? 'text-ink' : 'text-ink-2'}`
       }
     >
       {({ isActive }) => (
         <>
           <Icon className="size-6" strokeWidth={isActive ? 2.25 : 1.75} aria-hidden="true" />
-          <span className={`text-[11px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{children}</span>
+          <span className={`sr-only md:not-sr-only text-[11px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{children}</span>
         </>
       )}
     </NavLink>
@@ -31,7 +31,7 @@ function NavItem({ to, icon: Icon, end = false, children }) {
 // Чёрная плитка «Задать вопрос» посередине панели.
 function AskButton() {
   return (
-    <Link to="/questions/new" className="flex-1 flex justify-center pt-1.5 md:flex-none md:pt-0 md:my-1.5" aria-label="Задать вопрос">
+    <Link to="/questions/new" className="flex-1 flex items-center justify-center md:flex-none md:my-1.5" aria-label="Задать вопрос">
       <span className="h-9 w-14 md:h-10 rounded-xl bg-ink text-white inline-flex items-center justify-center">
         <Plus className="size-[22px]" strokeWidth={2.25} aria-hidden="true" />
       </span>
@@ -44,7 +44,7 @@ export function AppNav({ role, hideOnPhone = false }) {
   return (
     <nav
       aria-label="Основная навигация"
-      className={`${hideOnPhone ? 'hidden md:flex' : 'flex'} fixed inset-x-0 bottom-0 z-10 h-[76px] pb-4 border-t border-line bg-paper/95 backdrop-blur
+      className={`${hideOnPhone ? 'hidden md:flex' : 'flex'} fixed inset-x-0 bottom-0 z-10 h-[calc(3.5rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] border-t border-line bg-paper/95 backdrop-blur
         md:sticky md:top-0 md:h-screen md:w-[84px] md:shrink-0 md:flex-col md:items-center md:pt-5 md:pb-0 md:border-t-0 md:border-r md:bg-paper
         lg:hidden`}
     >

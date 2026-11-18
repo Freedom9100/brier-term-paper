@@ -18,7 +18,7 @@ function getBinIndex(p) {
 }
 
 export function Histogram({ bins, you, mean }) {
-  const maxCount = Math.max(...bins);
+  const maxCount = Math.max(1, ...bins);
   const youBin = you != null ? getBinIndex(you) : null;
 
   return (
@@ -26,9 +26,9 @@ export function Histogram({ bins, you, mean }) {
       {/* Линия основания */}
       <line x1="0" x2="100%" y1={`${TOP + CHART}%`} y2={`${TOP + CHART}%`} className="stroke-line" />
 
-      {/* Столбцы. Самый высокий — во всю высоту, остальные пропорционально, не ниже 2 %. */}
+      {/* Высота столбца пропорциональна числу прогнозов в диапазоне. */}
       {bins.map((count, index) => {
-        const barHeight = Math.max(2, (count / maxCount) * CHART);
+        const barHeight = (count / maxCount) * CHART;
         return (
           <rect
             key={index}

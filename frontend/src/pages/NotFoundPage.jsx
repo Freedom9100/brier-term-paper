@@ -3,10 +3,10 @@ import { EmptyState } from '../components/EmptyState';
 import { Button } from '../components/Button';
 
 // Страница 404: адреса нет в списке маршрутов, или вопроса / участника нет в данных.
-export function NotFoundPage({ role }) {
+export function NotFoundPage({ role, person }) {
   return (
     <>
-      <MobileHeader role={role} />
+      <MobileHeader role={role} person={person} />
       <div className="md:pt-16 lg:pt-8 lg:pb-14">
         <div className="lg:bg-paper lg:rounded-[24px] lg:border lg:border-line lg:py-16">
           <EmptyState

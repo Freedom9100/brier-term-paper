@@ -64,3 +64,6 @@ npm-debug.log*
 # Сами правила и навыки проекта (.claude/rules, .claude/skills)
 # в репозиторий попадают — они часть проекта.
 .claude/settings.local.json
+
+# Локальная среда и база для защиты.
+/.demo-local/

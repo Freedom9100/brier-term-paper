@@ -2,6 +2,8 @@ import { Link } from 'react-router';
 import { Clock } from 'lucide-react';
 import { Status } from './Status';
 import { Ruler } from './Ruler';
+import { formatDeadline } from '../utils/questionDates';
+import { formatNumber } from '../utils/score';
 
 // Строка вкладки «Активные» в кабинете: вопрос, по которому есть ваш прогноз,
 // а исхода ещё нет. Три числа — вы, группа и (после закрытия) модель.
@@ -15,7 +17,7 @@ export function ActiveForecastRow({ question }) {
         {!isClosed && (
           <span className="inline-flex items-center gap-1.5">
             <Clock className="size-4" strokeWidth={1.75} aria-hidden="true" />
-            {question.closesIn}
+            {formatDeadline(question.closes_at)}
           </span>
         )}
         <span>· {question.category}</span>
@@ -24,7 +26,7 @@ export function ActiveForecastRow({ question }) {
       <div className="mt-3 flex items-baseline gap-5 tabular-nums">
         <ForecastNumber value={question.you} label="вы" />
         <ForecastNumber value={question.crowd} label="группа" className={isClosed ? 'text-ink-2' : 'text-accent'} />
-        {question.model != null && <ForecastNumber value={question.model} label="модель" />}
+        {question.model != null && <ForecastNumber value={formatNumber(question.model, 1)} label={question.model_demo ? "демомодель" : "модель"} />}
       </div>
       <div className="mt-2.5">
         <Ruler crowd={question.crowd} you={question.you} model={question.model} />

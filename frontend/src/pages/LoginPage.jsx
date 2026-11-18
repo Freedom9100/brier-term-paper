@@ -1,14 +1,10 @@
 import { Link } from 'react-router';
-import { Eye } from 'lucide-react';
 import { Field, INPUT_CLASS } from '../components/Field';
-import { Button } from '../components/Button';
+import { AuthForm } from '../components/AuthForm';
 import { CalibrationChart } from '../components/CalibrationChart';
 import { calibration } from '../data/mock';
 
-// Вход. Рамку рисует AuthLayout. Пока только вид формы: «Войти» ведёт на ленту.
-// Плашка «Неверное имя пользователя или пароль» из макета появится вместе
-// с проверкой на сервере — сейчас ошибке неоткуда взяться.
-export function LoginPage() {
+export function LoginPage({ onSuccess }) {
   return (
     <>
       <h1 className="text-[30px] leading-9 font-semibold tracking-[-0.035em]">Вход</h1>
@@ -17,15 +13,14 @@ export function LoginPage() {
         <span className="hidden lg:inline">С возвращением.</span>
       </p>
       <div className="mt-7 flex flex-col gap-4">
-        <Field label="Имя пользователя">
-          <input type="text" autoComplete="username" className={`${INPUT_CLASS} h-12`} />
-        </Field>
-        <Field label="Пароль" trailing={<Eye className="size-5" strokeWidth={1.75} aria-hidden="true" />}>
-          <input type="password" autoComplete="current-password" className={`${INPUT_CLASS} h-12 pr-12`} />
-        </Field>
-        <div className="pt-2">
-          <Button to="/" size="lg" full>Войти</Button>
-        </div>
+        <AuthForm endpoint="/api/auth/login/" onSuccess={onSuccess} label="Войти" pendingLabel="Входим…">
+          <Field label="Имя пользователя">
+            <input name="username" type="text" autoComplete="username" required className={`${INPUT_CLASS} h-12 text-base`} />
+          </Field>
+          <Field label="Пароль">
+            <input name="password" type="password" autoComplete="current-password" required className={`${INPUT_CLASS} h-12 text-base`} />
+          </Field>
+        </AuthForm>
         <p className="text-center text-[14px] text-ink-2">
           Нет аккаунта?{' '}
           <Link to="/register" className="font-semibold text-ink underline underline-offset-4 decoration-line-2">Зарегистрироваться</Link>

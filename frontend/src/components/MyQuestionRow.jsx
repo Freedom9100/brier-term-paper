@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { Status } from './Status';
+import { formatParticipants } from '../utils/score';
 
 // Строка вкладки «Мои вопросы»: статус модерации, дата, заголовок.
 // У отклонённого вопроса — красная плашка с причиной отклонения.
@@ -19,8 +20,8 @@ export function MyQuestionRow({ question }) {
           <span className="font-semibold text-neg">Причина отклонения.</span> {question.reason}
         </div>
       )}
-      {question.participants && (
-        <div className="mt-1.5 text-[13px] text-ink-2 tabular-nums">{question.participants} участников</div>
+      {question.participants > 0 && (
+        <div className="mt-1.5 text-[13px] text-ink-2 tabular-nums">{formatParticipants(question.participants)}</div>
       )}
     </div>
   );

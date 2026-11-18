@@ -1,16 +1,15 @@
 import { Link } from 'react-router';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Logo } from './Logo';
 import { Avatar } from './Avatar';
 import { Button, IconButton } from './Button';
-import { currentUser } from '../data/mock';
 
 // Верхняя полоса на телефоне. На каждой странице своя, поэтому её рисует
 // сама страница, а не лейаут. От 768 px (md:hidden) её нет.
 // Два вида:
 //   backTo задан — стрелка «назад», заголовок по центру, справа кнопка right;
 //   backTo не задан — логотип, справа right или стандартные кнопки по роли.
-export function MobileHeader({ role, title, backTo, backIcon = ArrowLeft, right }) {
+export function MobileHeader({ role, person, title, backTo, backIcon = ArrowLeft, right }) {
   if (backTo) {
     return (
       <header className="md:hidden h-14 px-2 flex items-center border-b border-line bg-paper">
@@ -26,20 +25,19 @@ export function MobileHeader({ role, title, backTo, backIcon = ArrowLeft, right 
       <Link to="/">
         <Logo markClass="size-7" wordClass="text-[19px]" />
       </Link>
-      {right ?? <DefaultActions role={role} />}
+      {right ?? <DefaultActions role={role} person={person} />}
     </header>
   );
 }
 
 // Кнопки справа по умолчанию: поиск, а дальше вход для гостя или аватар.
-function DefaultActions({ role }) {
+function DefaultActions({ role, person }) {
   return (
     <div className="flex items-center gap-1">
-      <IconButton icon={Search} label="Поиск" />
       {role === 'guest' && <Button to="/login" size="sm" className="ml-1">Войти</Button>}
-      {role !== 'guest' && (
+      {person && (
         <Link to="/me" className="ml-1" aria-label="Кабинет">
-          <Avatar person={currentUser} size={32} />
+          <Avatar person={person} size={32} />
         </Link>
       )}
     </div>

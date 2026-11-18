@@ -1,12 +1,10 @@
 import { Link } from 'react-router';
 import { ArrowRight, Plus } from 'lucide-react';
 import { SectionTitle } from './SectionTitle';
-import { CalibrationChart } from './CalibrationChart';
 import { Avatar } from './Avatar';
 import { Status } from './Status';
 import { Button } from './Button';
-import { calibration, categories, currentUser, leaderboard } from '../data/mock';
-import { formatNumber, formatParticipants } from '../utils/score';
+import { formatNumber } from '../utils/score';
 
 // Белые панели боковой колонки десктопа. На телефоне и планшете их нет:
 // колонку прячет сама страница классом hidden lg:flex.
@@ -26,19 +24,7 @@ export function ArrowLink({ to, children }) {
   );
 }
 
-export function CalibrationPanel() {
-  return (
-    <Panel className="p-5">
-      <SectionTitle title="Ваша калибровка" right={<ArrowLink to="/me">Кабинет</ArrowLink>} />
-      <p className="mt-1 text-[14px] leading-5 text-ink-2">При уверенности 90 % сбывается 64 %.</p>
-      <div className="mt-3">
-        <CalibrationChart data={calibration[currentUser.username]} highlight={90} width={318} height={250} />
-      </div>
-    </Panel>
-  );
-}
-
-export function CategoriesPanel() {
+export function CategoriesPanel({ categories }) {
   return (
     <Panel className="p-5">
       <SectionTitle title="Категории" />
@@ -67,12 +53,13 @@ export function ScorePanel() {
 }
 
 // Пять лучших прогнозистов. highlight — имя пользователя, чью строку выделить серым.
-export function TopForecastersPanel({ highlight }) {
+export function TopForecastersPanel({ rows, highlight }) {
+  if (rows.length === 0) return null;
   return (
     <Panel className="px-5 pt-5 pb-3 overflow-hidden">
       <SectionTitle title="Лучшие прогнозисты" right={<ArrowLink to="/rating">Весь рейтинг</ArrowLink>} />
       <div className="mt-2">
-        {leaderboard.slice(0, 5).map((row) => (
+        {rows.map((row) => (
           <MiniLeaderRow key={row.username} row={row} highlighted={row.username === highlight} />
         ))}
       </div>
@@ -82,38 +69,18 @@ export function TopForecastersPanel({ highlight }) {
 
 // Короткая строка рейтинга: место, аватар, имя, средние очки.
 export function MiniLeaderRow({ row, highlighted = false }) {
-  const isMe = row.username === currentUser.username;
   return (
     <Link
-      to={`/users/${row.username}`}
+      to={`/users/${encodeURIComponent(row.username)}`}
       className={`flex items-center gap-3 py-2.5 ${highlighted ? '-mx-5 px-5 bg-paper-2' : 'border-b border-line last:border-b-0'}`}
     >
       <span className={`w-5 text-[14px] font-semibold tabular-nums ${row.place <= 3 ? 'text-ink' : 'text-ink-2'}`}>{row.place}</span>
       <Avatar person={row} size={32} />
       <span className="flex-1 min-w-0 text-[14px] font-semibold truncate">
         {row.name}
-        {highlighted && isMe && <span className="font-normal text-ink-2"> · вы</span>}
       </span>
-      <span className="text-[17px] font-semibold tracking-[-0.02em] tabular-nums">{formatNumber(row.avg)}</span>
+      <span className="text-[17px] font-semibold tracking-[-0.02em] tabular-nums">{formatNumber(row.avg, 2)}</span>
     </Link>
-  );
-}
-
-// Кабинет: место в рейтинге — соседи сверху и своя строка.
-export function MyPlaceNearbyPanel({ myRow }) {
-  return (
-    <Panel className="px-5 pt-5 pb-3 overflow-hidden">
-      <SectionTitle title="Место в рейтинге" right={<ArrowLink to="/rating">Весь рейтинг</ArrowLink>} />
-      <div className="mt-2">
-        {leaderboard.slice(8).map((row) => (
-          <MiniLeaderRow key={row.username} row={row} />
-        ))}
-        <div className="py-2 text-[13px] text-ink-2 tabular-nums border-b border-line">
-          {leaderboard.length + 1}–{myRow.place - 1} · ещё {formatParticipants(myRow.place - leaderboard.length - 1)}
-        </div>
-        <MiniLeaderRow row={myRow} highlighted />
-      </div>
-    </Panel>
   );
 }
 

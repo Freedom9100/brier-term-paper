@@ -1,14 +1,9 @@
 import { Link } from 'react-router';
-import { Eye } from 'lucide-react';
 import { Field, INPUT_CLASS } from '../components/Field';
-import { Button } from '../components/Button';
+import { AuthForm } from '../components/AuthForm';
 import { PayoffExample } from '../components/Payoff';
 
-// Регистрация. Рамку (логотип, фон, карточку) рисует AuthLayout.
-// Пока только вид формы: «Создать аккаунт» ведёт на ленту.
-export function RegisterPage() {
-  const eyeIcon = <Eye className="size-5" strokeWidth={1.75} aria-hidden="true" />;
-
+export function RegisterPage({ onSuccess }) {
   return (
     <>
       <h1 className="text-[30px] leading-9 font-semibold tracking-[-0.035em]">Регистрация</h1>
@@ -17,21 +12,20 @@ export function RegisterPage() {
         <span className="hidden lg:inline">Займёт минуту. Имя пользователя будет видно в рейтинге.</span>
       </p>
       <div className="mt-7 flex flex-col gap-4">
-        <Field label="Имя пользователя" hint="Латиница, цифры, точка и подчёркивание. Видно в рейтинге.">
-          <input type="text" autoComplete="username" className={`${INPUT_CLASS} h-12`} />
-        </Field>
-        <Field label="Электронная почта">
-          <input type="email" autoComplete="email" className={`${INPUT_CLASS} h-12`} />
-        </Field>
-        <Field label="Пароль" hint="Не короче 8 символов." trailing={eyeIcon}>
-          <input type="password" autoComplete="new-password" className={`${INPUT_CLASS} h-12 pr-12`} />
-        </Field>
-        <Field label="Повторите пароль" trailing={eyeIcon}>
-          <input type="password" autoComplete="new-password" placeholder="Ещё раз пароль" className={`${INPUT_CLASS} h-12 pr-12`} />
-        </Field>
-        <div className="pt-2">
-          <Button to="/" size="lg" full>Создать аккаунт</Button>
-        </div>
+        <AuthForm endpoint="/api/auth/register/" onSuccess={onSuccess} label="Создать аккаунт" pendingLabel="Создаём аккаунт…">
+          <Field label="Имя пользователя" hint="Латиница, цифры, точка и подчёркивание. Видно в рейтинге.">
+            <input name="username" type="text" autoComplete="username" required maxLength={150} className={`${INPUT_CLASS} h-12 text-base`} />
+          </Field>
+          <Field label="Электронная почта">
+            <input name="email" type="email" autoComplete="email" required maxLength={254} className={`${INPUT_CLASS} h-12 text-base`} />
+          </Field>
+          <Field label="Пароль" hint="Не короче 8 символов.">
+            <input name="password" type="password" autoComplete="new-password" required minLength={8} maxLength={128} className={`${INPUT_CLASS} h-12 text-base`} />
+          </Field>
+          <Field label="Повторите пароль">
+            <input name="password_confirmation" type="password" autoComplete="new-password" required maxLength={128} className={`${INPUT_CLASS} h-12 text-base`} />
+          </Field>
+        </AuthForm>
         <p className="text-center text-[14px] text-ink-2">
           Уже есть аккаунт?{' '}
           <Link to="/login" className="font-semibold text-ink underline underline-offset-4 decoration-line-2">Войти</Link>

@@ -1,77 +1,110 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowUp, Trash2 } from 'lucide-react';
 import { SectionTitle } from './SectionTitle';
 import { Avatar } from './Avatar';
 import { Button } from './Button';
-import { currentUser, people } from '../data/mock';
+import { deleteJson, getJson, postJson } from '../api';
+import { formatQuestionDate } from '../utils/questionDates';
 
-// Раздел комментариев страницы вопроса.
-// comments — показанные комментарии, total — сколько их всего у вопроса.
-// Гость читает, но не пишет: поля ввода у него нет.
-export function CommentsSection({ comments, total, role }) {
-  const hiddenCount = total - comments.length;
+export function CommentsSection({ questionId, person }) {
+  const endpoint = `/api/questions/${questionId}/comments/`;
+  const [page, setPage] = useState(null);
+  const [draft, setDraft] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getJson(endpoint, controller.signal).then(setPage).catch((failure) => {
+      if (!controller.signal.aborted) setError(failure.message);
+    });
+    return () => controller.abort();
+  }, [endpoint]);
+
+  function runCommentAction(action) {
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    action.catch((failure) => setError(failure.message)).finally(() => setBusy(false));
+  }
+
+  function submitComment(event) {
+    event.preventDefault();
+    const body = draft.trim();
+    if (!body || !page || busy) return;
+    runCommentAction(postJson(endpoint, { body }).then((comment) => {
+      setDraft('');
+      setPage((current) => ({
+        ...current, items: [comment, ...current.items], total: current.total + 1,
+      }));
+    }));
+  }
+
+  function removeComment(commentId) {
+    if (busy) return;
+    runCommentAction(deleteJson(`${endpoint}${commentId}/`).then(() => {
+      setPage((current) => ({
+        ...current,
+        items: current.items.filter((comment) => comment.id !== commentId),
+        total: Math.max(0, current.total - 1),
+      }));
+    }));
+  }
+
+  function showMore() {
+    if (!page?.next || busy) return;
+    runCommentAction(getJson(`${endpoint}?before=${page.next}`).then((nextPage) => {
+      setPage((current) => ({ ...nextPage, items: [...current.items, ...nextPage.items] }));
+    }));
+  }
+
   return (
     <>
-      <SectionTitle title="Комментарии" right={<span className="text-[15px] text-ink-2 tabular-nums">{total}</span>} />
-      {role !== 'guest' && <CommentInput />}
-      <div>
-        {comments.map((comment, index) => (
-          <Comment key={index} comment={comment} role={role} />
-        ))}
-      </div>
-      {hiddenCount > 0 && (
-        <div className="pt-1">
-          <Button variant="soft" full>Показать ещё {hiddenCount}</Button>
-        </div>
+      <SectionTitle title="Комментарии" right={page && <span className="text-sm text-ink-2 tabular-nums">{page.total}</span>} />
+      {person && (
+        <form onSubmit={submitComment} className="mt-3 flex items-start gap-3">
+          <Avatar person={person} size={32} className="mt-1" />
+          <label htmlFor="comment-body" className="sr-only">Добавить комментарий</label>
+          <textarea id="comment-body" rows={2} maxLength={1000} value={draft} onChange={(event) => setDraft(event.target.value)}
+            placeholder="Добавить комментарий" className="min-w-0 flex-1 rounded-xl bg-paper-2 px-3 py-2 text-base" />
+          <button type="submit" disabled={busy || !draft.trim() || !page} aria-label="Отправить комментарий"
+            className="size-10 shrink-0 rounded-full bg-ink text-white inline-flex items-center justify-center disabled:opacity-40">
+            <ArrowUp className="size-4" strokeWidth={2.25} aria-hidden="true" />
+          </button>
+        </form>
       )}
+      {error && <p role="alert" className="mt-3 text-sm text-neg">{error}</p>}
+      {!page && !error && <p role="status" className="mt-3 text-sm text-ink-2">Загружаем комментарии…</p>}
+      {page?.total === 0 && <p className="mt-3 text-sm text-ink-2">Пока нет комментариев.</p>}
+      {page?.items.map((comment) => (
+        <Comment key={comment.id} comment={comment} canDelete={comment.author.username === person?.username}
+          busy={busy} onDelete={() => removeComment(comment.id)} />
+      ))}
+      {page?.next != null && <Button onClick={showMore} disabled={busy} variant="soft" full className="mt-3">Показать ещё</Button>}
     </>
   );
 }
 
-// Один комментарий. author: true — пишет автор вопроса, рядом метка «автор».
-// Свой комментарий можно удалить — показываем значок корзины.
-function Comment({ comment, role }) {
-  const person = people[comment.who];
-  const isMine = role !== 'guest' && comment.who === currentUser.username;
-
+function Comment({ comment, canDelete, busy, onDelete }) {
+  const profile = `/users/${encodeURIComponent(comment.author.username)}`;
   return (
     <div className="flex gap-3 py-4 border-b border-line last:border-b-0">
-      <Link to={`/users/${person.username}`} className="self-start">
-        <Avatar person={person} size={32} />
-      </Link>
+      <Avatar person={comment.author} size={32} />
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 text-[14px] leading-5">
-          <Link to={`/users/${person.username}`} className="font-semibold hover:underline">{person.name}</Link>
-          {comment.author && <span className="h-5 px-1.5 rounded-md bg-paper-2 text-[11px] font-semibold text-ink-2 inline-flex items-center">автор</span>}
-          <span className="text-ink-2">· {comment.when}</span>
-          {isMine && (
-            <button type="button" className="ml-auto text-ink-2 hover:text-neg" aria-label="Удалить комментарий">
+        <div className="flex items-center gap-1.5 text-sm">
+          <Link to={profile} className="font-semibold truncate hover:underline">{comment.author.name}</Link>
+          {comment.is_question_author && <span className="shrink-0 rounded bg-paper-2 px-1.5 text-[11px] text-ink-2">автор</span>}
+          <time dateTime={comment.created_at} className="shrink-0 text-ink-2">{formatQuestionDate(comment.created_at)}</time>
+          {canDelete && (
+            <button type="button" disabled={busy} onClick={onDelete}
+              className="ml-auto shrink-0 size-8 inline-flex items-center justify-center text-ink-2 hover:text-neg disabled:opacity-40" aria-label="Удалить комментарий">
               <Trash2 className="size-4" strokeWidth={1.75} aria-hidden="true" />
             </button>
           )}
         </div>
-        <p className="mt-1 text-[15px] leading-[22px] text-pretty">{comment.text}</p>
-        {comment.forecast != null && (
-          <div className="mt-2 inline-flex items-center gap-1.5 text-[12px] text-ink-2">
-            <span className="w-1 h-3 rounded-full bg-ink" />прогноз {comment.forecast} %
-          </div>
-        )}
+        <p className="mt-1 text-[15px] leading-[22px] whitespace-pre-wrap break-words">{comment.body}</p>
       </div>
-    </div>
-  );
-}
-
-// Поле нового комментария. Отправка появится вместе с API.
-function CommentInput() {
-  return (
-    <div className="mt-1 flex items-center gap-3 py-3">
-      <Avatar person={currentUser} size={32} />
-      <label className="flex-1 flex items-center h-11 pl-4 pr-1.5 rounded-full bg-paper-2 text-[15px]">
-        <input type="text" placeholder="Добавить комментарий" aria-label="Добавить комментарий" className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-ink-2" />
-        <button type="button" className="size-8 rounded-full bg-line text-ink-3 inline-flex items-center justify-center shrink-0" aria-label="Отправить">
-          <ArrowUp className="size-4" strokeWidth={2.25} aria-hidden="true" />
-        </button>
-      </label>
     </div>
   );
 }

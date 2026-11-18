@@ -6,8 +6,8 @@ import { formatNumber } from '../utils/score';
 // className — рамка всей строки, cellClass — отступы ячейки, numberClass — размер чисел.
 export function StatsRow({ row, className = '', cellClass = 'py-4', numberClass = 'text-[32px]' }) {
   const stats = [
-    { value: formatNumber(row.avg), label: 'средние очки' },
-    { value: formatNumber(row.brier, 3), label: 'средний Брайер' },
+    { value: row.avg == null ? '—' : formatNumber(row.avg, 2), label: 'средние очки' },
+    { value: row.brier == null ? '—' : formatNumber(row.brier, 3), label: 'средний Брайер' },
     { value: row.count, label: 'разрешённых', labelEnd: ' прогнозов' },
   ];
 

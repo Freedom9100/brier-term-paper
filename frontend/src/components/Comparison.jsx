@@ -2,7 +2,7 @@ import { Sigma } from 'lucide-react';
 import { SectionTitle } from './SectionTitle';
 import { Ruler } from './Ruler';
 import { Points } from './Points';
-import { calculatePoints, formatNumber } from '../utils/score';
+import { calculatePoints, formatNumber, formatParticipants } from '../utils/score';
 
 // «Кто был ближе к исходу»: вы, группа и модель на одной линейке и в таблице
 // с очками каждого. Гость в таблице не участвует — у него нет прогноза.
@@ -10,14 +10,14 @@ export function Comparison({ question, role }) {
   const showYou = role !== 'guest' && question.you != null;
   const rows = [];
   if (showYou) {
-    rows.push({ who: 'Вы', mark: <span className="w-1 h-4 rounded-full bg-ink" />, p: question.you });
+    rows.push({ who: 'Вы', mark: <span className="w-1 h-4 rounded-full bg-ink" />, p: question.you, points: question.points });
   }
-  rows.push({ who: 'Группа', mark: <span className="w-4 h-2 rounded-full bg-accent" />, p: question.crowd, note: `среднее ${question.participants} участников` });
-  rows.push({ who: 'Модель', mark: <span className="size-3 rotate-45 rounded-[2px] border-2 border-ink-2" />, p: question.model, note: 'прогноз при закрытии приёма' });
+  rows.push({ who: 'Группа', mark: <span className="w-4 h-2 rounded-full bg-accent" />, p: question.crowd_exact, note: formatParticipants(question.participants) });
+  rows.push({ who: 'Модель', mark: <span className="size-3 rotate-45 rounded-[2px] border-2 border-ink-2" />, p: question.model, note: question.model_demo ? 'обучена на искусственных примерах' : 'прогноз при закрытии приёма' });
 
   // Очки каждого и лучший результат — ему достанется метка «ближе всех».
   for (const row of rows) {
-    row.points = calculatePoints(row.p, question.outcome);
+    row.points ??= calculatePoints(row.p, question.outcome);
   }
   const bestPoints = Math.max(...rows.map((row) => row.points));
 
@@ -25,37 +25,26 @@ export function Comparison({ question, role }) {
     <>
       <SectionTitle title="Кто был ближе к исходу" />
       <div className="mt-4">
-        <Ruler crowd={question.crowd} you={showYou ? question.you : null} model={question.model} outcome={question.outcome} heightClass="h-2" showLabels />
+        <Ruler crowd={question.crowd_exact} you={showYou ? question.you : null} model={question.model} outcome={question.outcome} heightClass="h-2" showLabels />
       </div>
       <div className="mt-3 rounded-2xl border border-line divide-y divide-line">
         {rows.map((row) => (
           <div key={row.who} className="flex items-center gap-3 px-4 py-3.5">
             <span className="w-4 flex justify-center">{row.mark}</span>
             <div className="flex-1 min-w-0">
-              <div className="text-[15px] font-semibold flex items-center gap-2">
+              <div className="text-[15px] font-semibold flex flex-wrap items-center gap-x-2 gap-y-1">
                 {row.who}
                 {row.points === bestPoints && <span className="h-5 px-1.5 rounded-md bg-pos-soft text-pos text-[11px] font-semibold inline-flex items-center whitespace-nowrap">ближе всех</span>}
               </div>
               {row.note && <div className="text-[12px] text-ink-2">{row.note}</div>}
             </div>
-            <span className="w-14 text-right text-[17px] font-semibold tabular-nums">{row.p} %</span>
-            <span className="w-14 text-right"><Points value={row.points} className="text-[20px] md:text-[22px]" /></span>
+            <span className="w-14 shrink-0 whitespace-nowrap text-right text-[15px] md:text-[17px] font-semibold tabular-nums">{formatNumber(row.p, 1)} %</span>
+            <span className="w-[4.25rem] shrink-0 whitespace-nowrap text-right"><Points value={row.points} className="text-[16px] md:text-[20px]" /></span>
           </div>
         ))}
       </div>
-      <p className="mt-3 text-[14px] leading-5 text-ink-2 text-pretty">{getVerdict(question)}</p>
     </>
   );
-}
-
-// Вывод под таблицей: кто точнее — группа или модель, и на сколько очков.
-function getVerdict(question) {
-  const crowdPoints = calculatePoints(question.crowd, question.outcome);
-  const modelPoints = calculatePoints(question.model, question.outcome);
-  if (crowdPoints >= modelPoints) {
-    return `Группа оказалась ближе модели на ${crowdPoints - modelPoints} очков.`;
-  }
-  return `Модель оказалась ближе группы на ${modelPoints - crowdPoints} очков.`;
 }
 
 // Формула очков и подстановка в неё вашего прогноза.

@@ -8,10 +8,10 @@ import { Footer } from '../components/Footer';
 // role — роль пользователя: от неё зависит, какие пункты показывает навигация.
 // hidePhoneNav — спрятать нижнюю панель и подвал на телефоне и планшете
 // (страница создания вопроса: ничто не отвлекает от формы). Колонка планшета остаётся.
-export function MainLayout({ role, hidePhoneNav = false }) {
+export function MainLayout({ role, person, onSignOut, signingOut, signOutError, hidePhoneNav = false }) {
   return (
     <div className="min-h-screen bg-paper lg:bg-canvas">
-      <DesktopHeader role={role} />
+      <DesktopHeader role={role} person={person} onSignOut={onSignOut} signingOut={signingOut} />
 
       {/* На планшете (md:flex) навигация встаёт колонкой слева от страницы. */}
       <div className="md:flex">
@@ -22,6 +22,7 @@ export function MainLayout({ role, hidePhoneNav = false }) {
         <div className="flex-1 min-w-0 flex flex-col min-h-screen lg:min-h-[calc(100vh-4rem)]">
           {/* На десктопе страница — колонка шириной не больше 1184 px по центру. */}
           <main className="flex-1 w-full lg:max-w-[1184px] lg:mx-auto lg:px-6">
+            {signOutError && <p role="alert" className="mx-4 mt-4 rounded-xl bg-neg-soft px-4 py-3 text-sm text-neg">{signOutError}</p>}
             <Outlet />
           </main>
           <div className={hidePhoneNav ? 'hidden lg:block' : ''}>
